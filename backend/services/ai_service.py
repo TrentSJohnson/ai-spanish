@@ -62,3 +62,15 @@ class AIService:
         content = response.choices[0].message.content.strip()
         result = json.loads(content)
         return result["corrected_sentence"]
+
+    async def get_translation_feedback(self, original: str, translation: str) -> str:
+        """Get general feedback about a translation attempt"""
+        template = self.jinja_env.get_template("translation_feedback.j2")
+        prompt = template.render(original=original, translation=translation)
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        content = response.choices[0].message.content.strip()
+        result = json.loads(content)
+        return result["feedback"]
