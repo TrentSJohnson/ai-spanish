@@ -16,6 +16,7 @@ function App() {
   const handleVocabSubmit = async (e) => {
     e.preventDefault()
     try {
+      console.log(newVocabWord)
       await vocabService.createVocabWord(newVocabWord)
       setNewVocabWord("")
     } catch (error) {

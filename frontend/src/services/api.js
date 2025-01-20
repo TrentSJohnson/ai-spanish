@@ -12,7 +12,7 @@ const api = axios.create({
 
 export const vocabService = {
   createVocabWord: async (word) => {
-    const response = await api.post(`${API_PREFIX}/vocab/words`, null, { body: { word } });
+    const response = await api.post(`${API_PREFIX}/vocab/words`, { word } );
     return response.data;
   },
   
