@@ -40,23 +40,3 @@ class GenerateController:
             id=str(generated_sentence.id),
             sentence=generated_sentence.sentence
         )
-
-    async def check_sentence(self, request: CheckRequest) -> Tuple[bool, str]:
-        generated_sentence = await self.sentence_service.get_generated_sentence(request.id)
-        if not generated_sentence:
-            return False, "Sentence ID not found"
-
-        # Store the guessed translation
-        guessed_translation = await self.translation_service.create_guessed_translation(
-            GuessedTranslation(
-                generated_sentence=generated_sentence.id,
-                guess=request.sentence
-            )
-        )
-
-        is_correct, feedback = await self.ai_service.check_translation(
-            generated_sentence.sentence,
-            request.sentence
-        )
-
-        return True, feedback

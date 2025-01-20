@@ -46,9 +46,10 @@ class AIService:
         """Check if a vocabulary word is properly used in the sentence"""
         template = self.jinja_env.get_template("check_vocab_usage.j2")
         prompt = template.render(word=word, sentence=sentence)
-        response = await self.client.chat.completions.create(
+        response = await self.client.messages.create(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300
         )
         content = response.choices[0].message.content.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
@@ -58,9 +59,10 @@ class AIService:
         """Rewrite a Spanish sentence to be grammatically correct"""
         template = self.jinja_env.get_template("rewrite_spanish.j2")
         prompt = template.render(sentence=sentence)
-        response = await self.client.chat.completions.create(
+        response = await self.client.messages.create(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300
         )
         content = response.choices[0].message.content.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
@@ -70,9 +72,10 @@ class AIService:
         """Get general feedback about a translation attempt"""
         template = self.jinja_env.get_template("translation_feedback.j2")
         prompt = template.render(original=original, translation=translation)
-        response = await self.client.chat.completions.create(
+        response = await self.client.messages.create(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300
         )
         content = response.choices[0].message.content.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
