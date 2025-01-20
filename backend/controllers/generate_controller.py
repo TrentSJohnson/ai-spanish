@@ -23,15 +23,10 @@ class GenerateController:
         self.translation_service = translation_service
         self.vocab_service = vocab_service
 
-    async def generate_sentence(self, vocab_word_ids: list[str] = None) -> SentenceResponse:
-        vocab_words = []
-        if vocab_word_ids:
-            # Fetch all vocab words in parallel
-            words = await asyncio.gather(*[
-                self.vocab_service.get_vocab_word(ObjectId(word_id))
-                for word_id in vocab_word_ids
-            ])
-            vocab_words = [word.word for word in words if word]
+    async def generate_sentence(self) -> SentenceResponse:
+        random_words = await self.vocab_service.get_random_vocab_words(2)
+        vocab_word_ids = [str(word.id) for word in random_words]
+        vocab_words = [word.word for word in random_words]
         
         sentence_text = await self.ai_service.generate_sentence(vocab_words)
         generated_sentence = await self.sentence_service.create_generated_sentence(
