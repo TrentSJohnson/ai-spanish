@@ -4,7 +4,7 @@ from services.vocab_service import VocabService
 from models.vocab_word import VocabWord
 from typing import List
 
-router = APIRouter(prefix="/api/v1/vocab")
+router = APIRouter(prefix="/vocab")
 
 # Dependency injection
 async def get_controller():

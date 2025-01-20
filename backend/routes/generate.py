@@ -7,7 +7,7 @@ from services.sentence_service import SentenceService
 from services.translation_service import TranslationService
 from services.vocab_service import VocabService
 
-router = APIRouter(prefix="/api/v1/generate")
+router = APIRouter(prefix="/generate")
 
 # Dependency injection
 async def get_controller():
