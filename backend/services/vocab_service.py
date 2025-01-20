@@ -13,21 +13,17 @@ class VocabService(BaseDBService):
     async def get_vocab_word(self, word_id: ObjectId) -> Optional[VocabWord]:
         word_dict = await self.db.vocab_words.find_one({"_id": word_id})
         if word_dict:
-            # Ensure the _id is properly handled
-            word_dict["id"] = word_dict["_id"]
-            word_dict.pop("_id")
-            print(word_dict)
-            return VocabWord.model_validate_json(word_dict)
+            return VocabWord(**word_dict)
         return None
 
     async def get_vocab_words(self) -> List[VocabWord]:
         cursor = self.db.vocab_words.find()
-        return [VocabWord.model_validate_json(doc) async for doc in cursor]
+        return [VocabWord.model_validate(doc) async for doc in cursor]
 
     async def get_random_vocab_words(self, count: int = 2) -> List[VocabWord]:
         pipeline = [{"$sample": {"size": count}}]
         cursor = self.db.vocab_words.aggregate(pipeline)
-        return [VocabWord.model_validate_json(doc) async for doc in cursor]
+        return [VocabWord.model_validate(doc) async for doc in cursor]
 
     async def update_vocab_word_stats(self, word_id: ObjectId, is_correct: bool) -> None:
         update = {
