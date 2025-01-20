@@ -18,11 +18,19 @@ class GenerateController:
         self.sentence_service = sentence_service
         self.translation_service = translation_service
 
-    async def generate_sentence(self) -> SentenceResponse:
-        sentence_text = await self.ai_service.generate_sentence()
+    async def generate_sentence(self, vocab_word_ids: list[str] = None) -> SentenceResponse:
+        vocab_words = []
+        if vocab_word_ids:
+            # Fetch actual vocab words from IDs
+            for word_id in vocab_word_ids:
+                word = await self.vocab_service.get_vocab_word(ObjectId(word_id))
+                if word:
+                    vocab_words.append(word.word)
+        
+        sentence_text = await self.ai_service.generate_sentence(vocab_words)
         generated_sentence = await self.sentence_service.create_generated_sentence(
             GeneratedSentence(
-                vocab_words=[],  # TODO: Add vocab words when implementing that feature
+                vocab_words=vocab_word_ids or [],
                 sentence=sentence_text
             )
         )
