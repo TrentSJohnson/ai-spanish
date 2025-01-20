@@ -1,8 +1,11 @@
 from typing import Optional
+
 from bson import ObjectId
+
 from models.guessed_translation import GuessedTranslation
 from models.translation_grade import TranslationGrade
 from services.db_service import BaseDBService
+
 
 class TranslationService(BaseDBService):
     async def create_guessed_translation(self, translation: GuessedTranslation) -> GuessedTranslation:

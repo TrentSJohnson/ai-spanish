@@ -1,7 +1,10 @@
 from typing import Optional
+
 from bson import ObjectId
+
 from models.generated_sentence import GeneratedSentence
 from services.db_service import BaseDBService
+
 
 class SentenceService(BaseDBService):
     async def create_generated_sentence(self, sentence: GeneratedSentence) -> GeneratedSentence:

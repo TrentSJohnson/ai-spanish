@@ -1,17 +1,19 @@
-from typing import Optional, List
+import json
 import os
 import re
-import json
+from pathlib import Path
+from typing import Optional, List
+
 from anthropic import AsyncAnthropic
 from jinja2 import Environment, FileSystemLoader
-from pathlib import Path
+
 
 class AIService:
     def __init__(self):
         api_key = os.getenv("ANTHROPIC_API_KEY")
         self.client = AsyncAnthropic(api_key=api_key)
         self.model = "claude-3-5-sonnet-20241022"  # Can be configured as needed
-        
+
         # Setup Jinja2 environment
         template_dir = Path(__file__).parent / "prompts"
         self.jinja_env = Environment(
@@ -30,7 +32,7 @@ class AIService:
             template = self.jinja_env.get_template("sentence_with_vocab.j2")
             prompt = template.render(vocab_words=[])
             messages = [{"role": "user", "content": prompt}]
-            
+
         response = await self.client.messages.create(
             model=self.model,
             messages=[{"role": "user", "content": messages[0]["content"]}],

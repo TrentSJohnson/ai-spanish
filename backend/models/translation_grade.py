@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List, Tuple
-from datetime import datetime
+from typing import Optional, List
+
 from bson import ObjectId
-from .vocab_word import PyObjectId, VocabWord
-from .generated_sentence import GeneratedSentence
-from .guessed_translation import GuessedTranslation
+from pydantic import BaseModel, Field
+
+from .vocab_word import PyObjectId
+
 
 class VocabWordGrade(BaseModel):
     vocab_word: PyObjectId
@@ -13,6 +13,7 @@ class VocabWordGrade(BaseModel):
     class Config:
         json_encoders = {ObjectId: str}
         arbitrary_types_allowed = True
+
 
 class TranslationGrade(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)

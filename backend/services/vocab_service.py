@@ -1,7 +1,10 @@
 from typing import List, Optional
+
 from bson import ObjectId
+
 from models.vocab_word import VocabWord
 from services.db_service import BaseDBService
+
 
 class VocabService(BaseDBService):
     async def create_vocab_word(self, vocab_word: VocabWord) -> VocabWord:

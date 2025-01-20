@@ -1,8 +1,11 @@
-from pydantic import BaseModel, Field
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
 from bson import ObjectId
+from pydantic import BaseModel, Field
+
 from .vocab_word import PyObjectId
+
 
 class GuessedTranslation(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)

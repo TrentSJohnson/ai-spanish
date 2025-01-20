@@ -1,22 +1,22 @@
 from typing import Tuple
-import asyncio
-from bson import ObjectId
+
+from models.generated_sentence import GeneratedSentence
+from models.guessed_translation import GuessedTranslation
+from models.requests.check_request import CheckRequest
+from models.responses.sentence_response import SentenceResponse
 from services.ai_service import AIService
 from services.sentence_service import SentenceService
 from services.translation_service import TranslationService
 from services.vocab_service import VocabService
-from models.responses.sentence_response import SentenceResponse
-from models.requests.check_request import CheckRequest
-from models.generated_sentence import GeneratedSentence
-from models.guessed_translation import GuessedTranslation
+
 
 class GenerateController:
     def __init__(
-        self,
-        ai_service: AIService,
-        sentence_service: SentenceService,
-        translation_service: TranslationService,
-        vocab_service: VocabService
+            self,
+            ai_service: AIService,
+            sentence_service: SentenceService,
+            translation_service: TranslationService,
+            vocab_service: VocabService
     ):
         self.ai_service = ai_service
         self.sentence_service = sentence_service
@@ -27,7 +27,7 @@ class GenerateController:
         random_words = await self.vocab_service.get_random_vocab_words(2)
         vocab_word_ids = [str(word.id) for word in random_words]
         vocab_words = [word.word for word in random_words]
-        
+
         sentence_text = await self.ai_service.generate_sentence(vocab_words)
         generated_sentence = await self.sentence_service.create_generated_sentence(
             GeneratedSentence(
@@ -35,7 +35,7 @@ class GenerateController:
                 sentence=sentence_text
             )
         )
-        
+
         return SentenceResponse(
             id=str(generated_sentence.id),
             sentence=generated_sentence.sentence
@@ -45,7 +45,7 @@ class GenerateController:
         generated_sentence = await self.sentence_service.get_generated_sentence(request.id)
         if not generated_sentence:
             return False, "Sentence ID not found"
-        
+
         # Store the guessed translation
         guessed_translation = await self.translation_service.create_guessed_translation(
             GuessedTranslation(
@@ -53,10 +53,10 @@ class GenerateController:
                 guess=request.sentence
             )
         )
-        
+
         is_correct, feedback = await self.ai_service.check_translation(
             generated_sentence.sentence,
             request.sentence
         )
-        
+
         return True, feedback

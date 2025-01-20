@@ -1,5 +1,7 @@
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
+
+from motor.motor_asyncio import AsyncIOMotorClient
+
 
 class BaseDBService:
     def __init__(self):

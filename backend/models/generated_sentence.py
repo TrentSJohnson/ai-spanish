@@ -1,7 +1,10 @@
-from pydantic import BaseModel, Field
 from typing import Optional, List
+
 from bson import ObjectId
+from pydantic import BaseModel, Field
+
 from .vocab_word import PyObjectId
+
 
 class GeneratedSentence(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)

@@ -1,6 +1,8 @@
 from typing import List
-from services.vocab_service import VocabService
+
 from models.vocab_word import VocabWord
+from services.vocab_service import VocabService
+
 
 class VocabController:
     def __init__(self, vocab_service: VocabService):
