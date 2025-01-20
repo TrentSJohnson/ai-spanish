@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from controllers.generate_controller import GenerateController, SentenceResponse, CheckRequest
+from controllers.generate_controller import GenerateController
+from models.responses.sentence_response import SentenceResponse
+from models.requests.check_request import CheckRequest
 from services.ai_service import AIService
 
 router = APIRouter(prefix="/api/v1/generate")

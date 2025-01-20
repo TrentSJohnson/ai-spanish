@@ -1,18 +1,11 @@
 from typing import Dict, Tuple
-from pydantic import BaseModel
 import uuid
 from services.ai_service import AIService
+from models.responses.sentence_response import SentenceResponse
+from models.requests.check_request import CheckRequest
 
 # Store generated sentences with their IDs
 sentences_store: Dict[str, str] = {}
-
-class SentenceResponse(BaseModel):
-    id: str
-    sentence: str
-
-class CheckRequest(BaseModel):
-    id: str
-    sentence: str
 
 class GenerateController:
     def __init__(self, ai_service: AIService):
