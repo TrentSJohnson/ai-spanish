@@ -58,3 +58,21 @@ class AIService:
             # Log the error in production
             print(f"Error checking translation: {str(e)}")
             return False, "An error occurred while checking the translation."
+
+    async def check_vocab_usage(self, word: str, sentence: str) -> tuple[bool, str]:
+        """Check if a vocabulary word is properly used in the sentence"""
+        try:
+            template = self.jinja_env.get_template("check_vocab_usage.j2")
+            prompt = template.render(word=word, sentence=sentence)
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            result = response.choices[0].message.content.strip()
+            is_correct = result.lower().startswith("true")
+            feedback = result.split("\n")[0] if "\n" in result else result
+            return is_correct, feedback
+        except Exception as e:
+            # Log the error in production
+            print(f"Error checking vocab usage: {str(e)}")
+            return False, "An error occurred while checking the vocabulary usage."
