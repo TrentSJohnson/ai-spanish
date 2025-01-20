@@ -1,16 +1,15 @@
 from typing import Optional, List
 import os
 import json
-import openai
-from openai import OpenAI
+from anthropic import Anthropic
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
 class AIService:
     def __init__(self):
-        api_key = os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=api_key)
-        self.model = "gpt-3.5-turbo"  # Can be configured as needed
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        self.client = Anthropic(api_key=api_key)
+        self.model = "claude-3-opus-20240229"  # Can be configured as needed
         
         # Setup Jinja2 environment
         template_dir = Path(__file__).parent / "prompts"
@@ -31,11 +30,12 @@ class AIService:
             prompt = template.render(vocab_words=[])
             messages = [{"role": "user", "content": prompt}]
             
-        response = await self.client.chat.completions.create(
+        response = await self.client.messages.create(
             model=self.model,
-            messages=messages
+            messages=[{"role": "user", "content": messages[0]["content"]}],
+            max_tokens=1024
         )
-        content = response.choices[0].message.content.strip()
+        content = response.content[0].text.strip()
         result = json.loads(content)
         return result["sentence"]
 
