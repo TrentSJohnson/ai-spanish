@@ -27,10 +27,9 @@ class AIService:
                 prompt = template.render(vocab_words=vocab_words)
                 messages = [{"role": "user", "content": prompt}]
             else:
-                messages = [
-                    {"role": "system", "content": "You are a language learning assistant. Generate a simple sentence in English."},
-                    {"role": "user", "content": "Generate a simple English sentence for language practice."}
-                ]
+                template = self.jinja_env.get_template("sentence_with_vocab.j2")
+                prompt = template.render(vocab_words=[])
+                messages = [{"role": "user", "content": prompt}]
                 
             response = await self.client.chat.completions.create(
                 model=self.model,
@@ -45,12 +44,11 @@ class AIService:
     async def check_translation(self, original: str, translation: str) -> tuple[bool, str]:
         """Check if the translation is correct using OpenAI API"""
         try:
+            template = self.jinja_env.get_template("check_translation.j2")
+            prompt = template.render(original=original, translation=translation)
             response = await self.client.chat.completions.create(
                 model=self.model,
-                messages=[
-                    {"role": "system", "content": "You are a language learning assistant. Compare the original sentence with the translation and provide feedback."},
-                    {"role": "user", "content": f"Original: {original}\nTranslation: {translation}\nAre these equivalent? Respond with 'True' or 'False' followed by a brief explanation."}
-                ]
+                messages=[{"role": "user", "content": prompt}]
             )
             result = response.choices[0].message.content.strip()
             is_correct = result.lower().startswith("true")
