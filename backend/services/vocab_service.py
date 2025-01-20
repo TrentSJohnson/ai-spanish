@@ -5,7 +5,9 @@ from services.db_service import BaseDBService
 
 class VocabService(BaseDBService):
     async def create_vocab_word(self, vocab_word: VocabWord) -> VocabWord:
-        result = await self.db.vocab_words.insert_one(vocab_word.dict(by_alias=True))
+        # Exclude None id from dict to let MongoDB generate one
+        word_dict = vocab_word.dict(by_alias=True, exclude_none=True)
+        result = await self.db.vocab_words.insert_one(word_dict)
         return await self.get_vocab_word(result.inserted_id)
 
     async def get_vocab_word(self, word_id: ObjectId) -> Optional[VocabWord]:
