@@ -9,7 +9,15 @@ router = APIRouter(prefix="/api/v1/generate")
 # Dependency injection
 async def get_controller():
     ai_service = AIService()
-    return GenerateController(ai_service)
+    sentence_service = SentenceService()
+    translation_service = TranslationService()
+    vocab_service = VocabService()
+    return GenerateController(
+        ai_service,
+        sentence_service,
+        translation_service,
+        vocab_service
+    )
 
 @router.post("/sentence")
 async def generate_sentence(

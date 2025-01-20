@@ -1,7 +1,9 @@
 from typing import Tuple
+from bson import ObjectId
 from services.ai_service import AIService
 from services.sentence_service import SentenceService
 from services.translation_service import TranslationService
+from services.vocab_service import VocabService
 from models.responses.sentence_response import SentenceResponse
 from models.requests.check_request import CheckRequest
 from models.generated_sentence import GeneratedSentence
@@ -12,11 +14,13 @@ class GenerateController:
         self,
         ai_service: AIService,
         sentence_service: SentenceService,
-        translation_service: TranslationService
+        translation_service: TranslationService,
+        vocab_service: VocabService
     ):
         self.ai_service = ai_service
         self.sentence_service = sentence_service
         self.translation_service = translation_service
+        self.vocab_service = vocab_service
 
     async def generate_sentence(self, vocab_word_ids: list[str] = None) -> SentenceResponse:
         vocab_words = []
