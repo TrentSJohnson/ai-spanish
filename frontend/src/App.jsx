@@ -3,7 +3,8 @@ import './App.css'
 import { vocabService, generateService } from './services/api'
 
 function App() {
-  const [spanishSentence] = useState("¿Cómo estás?")
+  const [spanishSentence, setSpanishSentence] = useState("¿Cómo estás?")
+  const [isLoading, setIsLoading] = useState(false)
   const [englishTranslation, setEnglishTranslation] = useState("")
   const [newVocabWord, setNewVocabWord] = useState("")
 
@@ -11,6 +12,18 @@ function App() {
     e.preventDefault()
     // TODO: Add validation logic here
     console.log("Submitted translation:", englishTranslation)
+  }
+
+  const handleGenerateClick = async () => {
+    setIsLoading(true)
+    try {
+      const response = await generateService.generateSentence()
+      setSpanishSentence(response.sentence)
+    } catch (error) {
+      console.error("Error generating sentence:", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleVocabSubmit = async (e) => {
@@ -29,7 +42,16 @@ function App() {
       <h1>Translation Practice</h1>
       <div className="translation-container">
         <h2>Translate this sentence:</h2>
-        <p className="spanish-text">{spanishSentence}</p>
+        <div className="sentence-controls">
+          <p className="spanish-text">{spanishSentence}</p>
+          <button 
+            onClick={handleGenerateClick}
+            disabled={isLoading}
+            className="generate-btn"
+          >
+            {isLoading ? 'Generating...' : 'Generate New Sentence'}
+          </button>
+        </div>
         
         <form onSubmit={handleTranslationSubmit}>
           <input
