@@ -1,33 +1,52 @@
-from typing import Dict, Tuple
-import uuid
+from typing import Tuple
 from services.ai_service import AIService
+from services.sentence_service import SentenceService
+from services.translation_service import TranslationService
 from models.responses.sentence_response import SentenceResponse
 from models.requests.check_request import CheckRequest
-
-# Store generated sentences with their IDs
-sentences_store: Dict[str, str] = {}
+from models.generated_sentence import GeneratedSentence
+from models.guessed_translation import GuessedTranslation
 
 class GenerateController:
-    def __init__(self, ai_service: AIService):
+    def __init__(
+        self,
+        ai_service: AIService,
+        sentence_service: SentenceService,
+        translation_service: TranslationService
+    ):
         self.ai_service = ai_service
+        self.sentence_service = sentence_service
+        self.translation_service = translation_service
 
     async def generate_sentence(self) -> SentenceResponse:
-        generated_sentence = await self.ai_service.generate_sentence()
-        sentence_id = str(uuid.uuid4())
-        sentences_store[sentence_id] = generated_sentence
+        sentence_text = await self.ai_service.generate_sentence()
+        generated_sentence = await self.sentence_service.create_generated_sentence(
+            GeneratedSentence(
+                vocab_words=[],  # TODO: Add vocab words when implementing that feature
+                sentence=sentence_text
+            )
+        )
         
         return SentenceResponse(
-            id=sentence_id,
-            sentence=generated_sentence
+            id=str(generated_sentence.id),
+            sentence=generated_sentence.sentence
         )
 
     async def check_sentence(self, request: CheckRequest) -> Tuple[bool, str]:
-        if request.id not in sentences_store:
+        generated_sentence = await self.sentence_service.get_generated_sentence(request.id)
+        if not generated_sentence:
             return False, "Sentence ID not found"
         
-        original_sentence = sentences_store[request.id]
+        # Store the guessed translation
+        guessed_translation = await self.translation_service.create_guessed_translation(
+            GuessedTranslation(
+                generated_sentence=generated_sentence.id,
+                guess=request.sentence
+            )
+        )
+        
         is_correct, feedback = await self.ai_service.check_translation(
-            original_sentence,
+            generated_sentence.sentence,
             request.sentence
         )
         
