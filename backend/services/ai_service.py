@@ -39,18 +39,6 @@ class AIService:
         result = json.loads(content)
         return result["sentence"]
 
-    async def check_translation(self, original: str, translation: str) -> tuple[bool, str]:
-        """Check if the translation is correct using OpenAI API"""
-        template = self.jinja_env.get_template("check_translation.j2")
-        prompt = template.render(original=original, translation=translation)
-        response = await self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        content = response.choices[0].message.content.strip()
-        result = json.loads(content)
-        return result["is_correct"], result["feedback"]
-
     async def check_vocab_usage(self, word: str, sentence: str) -> tuple[bool, str]:
         """Check if a vocabulary word is properly used in the sentence"""
         template = self.jinja_env.get_template("check_vocab_usage.j2")
