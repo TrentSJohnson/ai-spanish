@@ -3,7 +3,10 @@ import './App.css'
 import { vocabService, generateService } from './services/api'
 
 function App() {
-  const [spanishSentence, setSpanishSentence] = useState("¿Cómo estás?")
+  const [currentSentence, setCurrentSentence] = useState({
+    id: null,
+    text: "¿Cómo estás?"
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [englishTranslation, setEnglishTranslation] = useState("")
   const [newVocabWord, setNewVocabWord] = useState("")
@@ -18,7 +21,10 @@ function App() {
     setIsLoading(true)
     try {
       const response = await generateService.generateSentence()
-      setSpanishSentence(response.sentence)
+      setCurrentSentence({
+        id: response.id,
+        text: response.sentence
+      })
     } catch (error) {
       console.error("Error generating sentence:", error)
     } finally {
@@ -43,7 +49,7 @@ function App() {
       <div className="translation-container">
         <h2>Translate this sentence:</h2>
         <div className="sentence-controls">
-          <p className="spanish-text">{spanishSentence}</p>
+          <p className="spanish-text">{currentSentence.text}</p>
           <button 
             onClick={handleGenerateClick}
             disabled={isLoading}
