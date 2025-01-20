@@ -1,23 +1,20 @@
-from typing import Optional
+from typing import Optional, Annotated
+from typing_extensions import Annotated
 
 from bson import ObjectId
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, BeforeValidator
+from pydantic.json_schema import JsonSchemaValue
 
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid ObjectId")
+def validate_object_id(v: Any) -> ObjectId:
+    if isinstance(v, ObjectId):
+        return v
+    if ObjectId.is_valid(v):
         return ObjectId(v)
+    raise ValueError("Invalid ObjectId")
 
-    @classmethod
-    def __json_schema__(cls, core_schema, handler):
-        return {"type": "string"}
+
+PyObjectId = Annotated[ObjectId, BeforeValidator(validate_object_id)]
 
 
 class VocabWord(BaseModel):
