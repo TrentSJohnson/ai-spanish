@@ -14,8 +14,9 @@ class PyObjectId(ObjectId):
         return ObjectId(v)
 
     @classmethod
-    def __modify_schema__(cls, field_schema):
+    def __get_pydantic_json_schema__(cls, field_schema, **kwargs):
         field_schema.update(type="string")
+        return field_schema
 
 class VocabWord(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
