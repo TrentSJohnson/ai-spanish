@@ -1,4 +1,5 @@
 from typing import Tuple
+import asyncio
 from bson import ObjectId
 from services.ai_service import AIService
 from services.sentence_service import SentenceService
@@ -25,11 +26,12 @@ class GenerateController:
     async def generate_sentence(self, vocab_word_ids: list[str] = None) -> SentenceResponse:
         vocab_words = []
         if vocab_word_ids:
-            # Fetch actual vocab words from IDs
-            for word_id in vocab_word_ids:
-                word = await self.vocab_service.get_vocab_word(ObjectId(word_id))
-                if word:
-                    vocab_words.append(word.word)
+            # Fetch all vocab words in parallel
+            words = await asyncio.gather(*[
+                self.vocab_service.get_vocab_word(ObjectId(word_id))
+                for word_id in vocab_word_ids
+            ])
+            vocab_words = [word.word for word in words if word]
         
         sentence_text = await self.ai_service.generate_sentence(vocab_words)
         generated_sentence = await self.sentence_service.create_generated_sentence(
