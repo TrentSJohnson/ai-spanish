@@ -30,6 +30,7 @@ services:
       - DATABASE_NAME=aispanish
     depends_on:
       - mongodb
+    env_file: backend.env
 
   mongodb:
     image: mongo:latest
