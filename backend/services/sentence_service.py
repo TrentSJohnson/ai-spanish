@@ -5,7 +5,7 @@ from services.db_service import BaseDBService
 
 class SentenceService(BaseDBService):
     async def create_generated_sentence(self, sentence: GeneratedSentence) -> GeneratedSentence:
-        result = await self.db.generated_sentences.insert_one(sentence.dict(by_alias=True))
+        result = await self.db.generated_sentences.insert_one(sentence.model_dump(by_alias=True))
         return await self.get_generated_sentence(result.inserted_id)
 
     async def get_generated_sentence(self, sentence_id: ObjectId) -> Optional[GeneratedSentence]:

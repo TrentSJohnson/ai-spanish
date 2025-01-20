@@ -6,7 +6,7 @@ from services.db_service import BaseDBService
 class VocabService(BaseDBService):
     async def create_vocab_word(self, vocab_word: VocabWord) -> VocabWord:
         # Exclude None id from dict to let MongoDB generate one
-        word_dict = vocab_word.dict(by_alias=True, exclude_none=True)
+        word_dict = vocab_word.model_dump(by_alias=True, exclude_none=True)
         result = await self.db.vocab_words.insert_one(word_dict)
         return await self.get_vocab_word(result.inserted_id)
 
@@ -17,17 +17,17 @@ class VocabService(BaseDBService):
             word_dict["id"] = word_dict["_id"]
             word_dict.pop("_id")
             print(word_dict)
-            return VocabWord.model_validate(word_dict)
+            return VocabWord.model_validate_json(word_dict)
         return None
 
     async def get_vocab_words(self) -> List[VocabWord]:
         cursor = self.db.vocab_words.find()
-        return [VocabWord.model_validate(doc) async for doc in cursor]
+        return [VocabWord.model_validate_json(doc) async for doc in cursor]
 
     async def get_random_vocab_words(self, count: int = 2) -> List[VocabWord]:
         pipeline = [{"$sample": {"size": count}}]
         cursor = self.db.vocab_words.aggregate(pipeline)
-        return [VocabWord.model_validate(doc) async for doc in cursor]
+        return [VocabWord.model_validate_json(doc) async for doc in cursor]
 
     async def update_vocab_word_stats(self, word_id: ObjectId, is_correct: bool) -> None:
         update = {
