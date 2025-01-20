@@ -76,3 +76,18 @@ class AIService:
             # Log the error in production
             print(f"Error checking vocab usage: {str(e)}")
             return False, "An error occurred while checking the vocabulary usage."
+
+    async def rewrite_spanish(self, sentence: str) -> str:
+        """Rewrite a Spanish sentence to be grammatically correct"""
+        try:
+            template = self.jinja_env.get_template("rewrite_spanish.j2")
+            prompt = template.render(sentence=sentence)
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            # Log the error in production
+            print(f"Error rewriting sentence: {str(e)}")
+            return "An error occurred while rewriting the sentence."
