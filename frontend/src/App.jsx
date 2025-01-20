@@ -21,22 +21,6 @@ function App() {
   return (
     <>
       <h1>Translation Practice</h1>
-      <div className="vocab-container">
-        <h2>Add New Vocabulary Word</h2>
-        <form onSubmit={handleVocabSubmit}>
-          <input
-            type="text"
-            value={newVocabWord}
-            onChange={(e) => setNewVocabWord(e.target.value)}
-            placeholder="Enter new Spanish word"
-            className="vocab-input"
-          />
-          <button type="submit" className="submit-btn">
-            Add Word
-          </button>
-        </form>
-      </div>
-      
       <div className="translation-container">
         <h2>Translate this sentence:</h2>
         <p className="spanish-text">{spanishSentence}</p>
@@ -51,6 +35,22 @@ function App() {
           />
           <button type="submit" className="submit-btn">
             Check Translation
+          </button>
+        </form>
+      </div>
+
+      <div className="vocab-container">
+        <h2>Add New Vocabulary Word</h2>
+        <form onSubmit={handleVocabSubmit}>
+          <input
+              type="text"
+              value={newVocabWord}
+              onChange={(e) => setNewVocabWord(e.target.value)}
+              placeholder="Enter new Spanish word"
+              className="vocab-input"
+          />
+          <button type="submit" className="submit-btn">
+            Add Word
           </button>
         </form>
       </div>
