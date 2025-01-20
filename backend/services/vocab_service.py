@@ -13,7 +13,9 @@ class VocabService(BaseDBService):
     async def get_vocab_word(self, word_id: ObjectId) -> Optional[VocabWord]:
         word_dict = await self.db.vocab_words.find_one({"_id": word_id})
         if word_dict:
-            return VocabWord(**word_dict)
+            # Ensure the _id is properly handled
+            word_dict["_id"] = word_dict["_id"]
+            return VocabWord.parse_obj(word_dict)
         return None
 
     async def get_vocab_words(self) -> List[VocabWord]:
