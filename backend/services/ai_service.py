@@ -22,75 +22,55 @@ class AIService:
 
     async def generate_sentence(self, vocab_words: Optional[List[str]] = None) -> str:
         """Generate a sentence using OpenAI API, optionally using specific vocabulary words"""
-        try:
-            if vocab_words:
-                template = self.jinja_env.get_template("sentence_with_vocab.j2")
-                prompt = template.render(vocab_words=vocab_words)
-                messages = [{"role": "user", "content": prompt}]
-            else:
-                template = self.jinja_env.get_template("sentence_with_vocab.j2")
-                prompt = template.render(vocab_words=[])
-                messages = [{"role": "user", "content": prompt}]
-                
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=messages
-            )
-            content = response.choices[0].message.content.strip()
-            result = json.loads(content)
-            return result["sentence"]
-        except Exception as e:
-            # Log the error in production
-            print(f"Error generating sentence: {str(e)}")
-            return "An error occurred while generating the sentence."
+        if vocab_words:
+            template = self.jinja_env.get_template("sentence_with_vocab.j2")
+            prompt = template.render(vocab_words=vocab_words)
+            messages = [{"role": "user", "content": prompt}]
+        else:
+            template = self.jinja_env.get_template("sentence_with_vocab.j2")
+            prompt = template.render(vocab_words=[])
+            messages = [{"role": "user", "content": prompt}]
+            
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=messages
+        )
+        content = response.choices[0].message.content.strip()
+        result = json.loads(content)
+        return result["sentence"]
 
     async def check_translation(self, original: str, translation: str) -> tuple[bool, str]:
         """Check if the translation is correct using OpenAI API"""
-        try:
-            template = self.jinja_env.get_template("check_translation.j2")
-            prompt = template.render(original=original, translation=translation)
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            content = response.choices[0].message.content.strip()
-            result = json.loads(content)
-            return result["is_correct"], result["feedback"]
-        except Exception as e:
-            # Log the error in production
-            print(f"Error checking translation: {str(e)}")
-            return False, "An error occurred while checking the translation."
+        template = self.jinja_env.get_template("check_translation.j2")
+        prompt = template.render(original=original, translation=translation)
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        content = response.choices[0].message.content.strip()
+        result = json.loads(content)
+        return result["is_correct"], result["feedback"]
 
     async def check_vocab_usage(self, word: str, sentence: str) -> tuple[bool, str]:
         """Check if a vocabulary word is properly used in the sentence"""
-        try:
-            template = self.jinja_env.get_template("check_vocab_usage.j2")
-            prompt = template.render(word=word, sentence=sentence)
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            content = response.choices[0].message.content.strip()
-            result = json.loads(content)
-            return result["is_correct"], result["feedback"]
-        except Exception as e:
-            # Log the error in production
-            print(f"Error checking vocab usage: {str(e)}")
-            return False, "An error occurred while checking the vocabulary usage."
+        template = self.jinja_env.get_template("check_vocab_usage.j2")
+        prompt = template.render(word=word, sentence=sentence)
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        content = response.choices[0].message.content.strip()
+        result = json.loads(content)
+        return result["is_correct"], result["feedback"]
 
     async def rewrite_spanish(self, sentence: str) -> str:
         """Rewrite a Spanish sentence to be grammatically correct"""
-        try:
-            template = self.jinja_env.get_template("rewrite_spanish.j2")
-            prompt = template.render(sentence=sentence)
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            content = response.choices[0].message.content.strip()
-            result = json.loads(content)
-            return result["corrected_sentence"]
-        except Exception as e:
-            # Log the error in production
-            print(f"Error rewriting sentence: {str(e)}")
-            return "An error occurred while rewriting the sentence."
+        template = self.jinja_env.get_template("rewrite_spanish.j2")
+        prompt = template.render(sentence=sentence)
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        content = response.choices[0].message.content.strip()
+        result = json.loads(content)
+        return result["corrected_sentence"]
