@@ -9,7 +9,7 @@ from services.db_service import BaseDBService
 
 class TranslationService(BaseDBService):
     async def create_guessed_translation(self, translation: GuessedTranslation) -> GuessedTranslation:
-        result = await self.db.guessed_translations.insert_one(translation.model_dump(by_alias=True))
+        result = await self.db.guessed_translations.insert_one(translation.model_dump(by_alias=True, exclude_none=True))
         return await self.get_guessed_translation(result.inserted_id)
 
     async def get_guessed_translation(self, translation_id: ObjectId) -> Optional[GuessedTranslation]:
@@ -19,7 +19,7 @@ class TranslationService(BaseDBService):
         return None
 
     async def create_translation_grade(self, grade: TranslationGrade) -> TranslationGrade:
-        result = await self.db.translation_grades.insert_one(grade.model_dump(by_alias=True))
+        result = await self.db.translation_grades.insert_one(grade.model_dump(by_alias=True, exclude_none=True))
         return await self.get_translation_grade(result.inserted_id)
 
     async def get_translation_grade(self, grade_id: ObjectId) -> Optional[TranslationGrade]:
