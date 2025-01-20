@@ -3,6 +3,9 @@ from controllers.generate_controller import GenerateController
 from models.responses.sentence_response import SentenceResponse
 from models.requests.check_request import CheckRequest
 from services.ai_service import AIService
+from services.sentence_service import SentenceService
+from services.translation_service import TranslationService
+from services.vocab_service import VocabService
 
 router = APIRouter(prefix="/api/v1/generate")
 
