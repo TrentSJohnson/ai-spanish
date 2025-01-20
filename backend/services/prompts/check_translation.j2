@@ -3,4 +3,8 @@ You are a language learning assistant. Compare the original sentence with the tr
 Original: {{ original }}
 Translation: {{ translation }}
 
-Are these equivalent? Respond with 'True' or 'False' followed by a brief explanation.
+Respond in JSON format:
+{
+    "is_correct": true/false,
+    "feedback": "brief explanation of the assessment"
+}

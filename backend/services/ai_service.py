@@ -1,5 +1,6 @@
 from typing import Optional, List
 import os
+import json
 import openai
 from openai import OpenAI
 from jinja2 import Environment, FileSystemLoader
@@ -35,7 +36,9 @@ class AIService:
                 model=self.model,
                 messages=messages
             )
-            return response.choices[0].message.content.strip()
+            content = response.choices[0].message.content.strip()
+            result = json.loads(content)
+            return result["sentence"]
         except Exception as e:
             # Log the error in production
             print(f"Error generating sentence: {str(e)}")
@@ -50,10 +53,9 @@ class AIService:
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}]
             )
-            result = response.choices[0].message.content.strip()
-            is_correct = result.lower().startswith("true")
-            feedback = result.split("\n")[0] if "\n" in result else result
-            return is_correct, feedback
+            content = response.choices[0].message.content.strip()
+            result = json.loads(content)
+            return result["is_correct"], result["feedback"]
         except Exception as e:
             # Log the error in production
             print(f"Error checking translation: {str(e)}")
@@ -68,10 +70,9 @@ class AIService:
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}]
             )
-            result = response.choices[0].message.content.strip()
-            is_correct = result.lower().startswith("true")
-            feedback = result.split("\n")[0] if "\n" in result else result
-            return is_correct, feedback
+            content = response.choices[0].message.content.strip()
+            result = json.loads(content)
+            return result["is_correct"], result["feedback"]
         except Exception as e:
             # Log the error in production
             print(f"Error checking vocab usage: {str(e)}")
@@ -86,7 +87,9 @@ class AIService:
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}]
             )
-            return response.choices[0].message.content.strip()
+            content = response.choices[0].message.content.strip()
+            result = json.loads(content)
+            return result["corrected_sentence"]
         except Exception as e:
             # Log the error in production
             print(f"Error rewriting sentence: {str(e)}")
