@@ -1,23 +1,40 @@
-from typing import Optional
+from typing import Optional, List
 import os
 import openai
 from openai import OpenAI
+from jinja2 import Environment, FileSystemLoader
+from pathlib import Path
 
 class AIService:
     def __init__(self):
         api_key = os.getenv("OPENAI_API_KEY")
         self.client = OpenAI(api_key=api_key)
         self.model = "gpt-3.5-turbo"  # Can be configured as needed
+        
+        # Setup Jinja2 environment
+        template_dir = Path(__file__).parent / "prompts"
+        self.jinja_env = Environment(
+            loader=FileSystemLoader(template_dir),
+            trim_blocks=True,
+            lstrip_blocks=True
+        )
 
-    async def generate_sentence(self) -> str:
-        """Generate a sentence using OpenAI API"""
+    async def generate_sentence(self, vocab_words: Optional[List[str]] = None) -> str:
+        """Generate a sentence using OpenAI API, optionally using specific vocabulary words"""
         try:
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[
+            if vocab_words:
+                template = self.jinja_env.get_template("sentence_with_vocab.j2")
+                prompt = template.render(vocab_words=vocab_words)
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                messages = [
                     {"role": "system", "content": "You are a language learning assistant. Generate a simple sentence in English."},
                     {"role": "user", "content": "Generate a simple English sentence for language practice."}
                 ]
+                
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=messages
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
