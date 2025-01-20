@@ -1,15 +1,15 @@
 from typing import Optional, List
 import os
 import json
-from anthropic import Anthropic
+from anthropic import AsyncAnthropic
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
 class AIService:
     def __init__(self):
         api_key = os.getenv("ANTHROPIC_API_KEY")
-        self.client = Anthropic(api_key=api_key)
-        self.model = "claude-3-opus-20240229"  # Can be configured as needed
+        self.client = AsyncAnthropic(api_key=api_key)
+        self.model = "claude-3-5-sonnet-20241022"  # Can be configured as needed
         
         # Setup Jinja2 environment
         template_dir = Path(__file__).parent / "prompts"
@@ -36,7 +36,7 @@ class AIService:
             max_tokens=1024
         )
         content = response.content[0].text.strip()
-        result = json.loads(content)
+        result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["sentence"]
 
     async def check_vocab_usage(self, word: str, sentence: str) -> tuple[bool, str]:
@@ -48,7 +48,7 @@ class AIService:
             messages=[{"role": "user", "content": prompt}]
         )
         content = response.choices[0].message.content.strip()
-        result = json.loads(content)
+        result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["is_correct"], result["feedback"]
 
     async def rewrite_spanish(self, sentence: str) -> str:
@@ -60,7 +60,7 @@ class AIService:
             messages=[{"role": "user", "content": prompt}]
         )
         content = response.choices[0].message.content.strip()
-        result = json.loads(content)
+        result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["corrected_sentence"]
 
     async def get_translation_feedback(self, original: str, translation: str) -> str:
@@ -72,5 +72,5 @@ class AIService:
             messages=[{"role": "user", "content": prompt}]
         )
         content = response.choices[0].message.content.strip()
-        result = json.loads(content)
+        result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["feedback"]
