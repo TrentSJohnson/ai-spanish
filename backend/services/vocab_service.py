@@ -20,12 +20,12 @@ class VocabService(BaseDBService):
 
     async def get_vocab_words(self) -> List[VocabWord]:
         cursor = self.db.vocab_words.find()
-        return [VocabWord(**doc) async for doc in cursor]
+        return [VocabWord.parse_obj(doc) async for doc in cursor]
 
     async def get_random_vocab_words(self, count: int = 2) -> List[VocabWord]:
         pipeline = [{"$sample": {"size": count}}]
         cursor = self.db.vocab_words.aggregate(pipeline)
-        return [VocabWord(**doc) async for doc in cursor]
+        return [VocabWord.parse_obj(doc) async for doc in cursor]
 
     async def update_vocab_word_stats(self, word_id: ObjectId, is_correct: bool) -> None:
         update = {
