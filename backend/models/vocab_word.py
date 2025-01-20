@@ -1,4 +1,4 @@
-from typing import Optional, Annotated
+from typing import Optional, Annotated, Any
 from typing_extensions import Annotated
 
 from bson import ObjectId
