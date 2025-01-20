@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import { vocabService } from './services/api'
+import { vocabService, generateService } from './services/api'
 
 function App() {
   const [spanishSentence] = useState("¿Cómo estás?")
