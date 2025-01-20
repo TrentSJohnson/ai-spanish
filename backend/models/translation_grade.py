@@ -3,7 +3,7 @@ from typing import Optional, List
 from bson import ObjectId
 from pydantic import BaseModel, Field
 
-from .vocab_word import PyObjectId
+from models.vocab_word import PyObjectId
 
 
 class VocabWordGrade(BaseModel):
