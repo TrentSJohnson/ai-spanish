@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import { vocabService } from './services/api'
 
 function App() {
   const [spanishSentence] = useState("¿Cómo estás?")
@@ -12,10 +13,14 @@ function App() {
     console.log("Submitted translation:", englishTranslation)
   }
 
-  const handleVocabSubmit = (e) => {
+  const handleVocabSubmit = async (e) => {
     e.preventDefault()
-    console.log("Submitted vocab word:", newVocabWord)
-    setNewVocabWord("")
+    try {
+      await vocabService.createVocabWord(newVocabWord)
+      setNewVocabWord("")
+    } catch (error) {
+      console.error("Error adding vocab word:", error)
+    }
   }
 
   return (
