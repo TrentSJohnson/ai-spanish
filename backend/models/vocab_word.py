@@ -28,3 +28,5 @@ class VocabWord(BaseModel):
     word: str
     guesses: int = 0
     correct: int = 0
+    score: int = 0
+    last_seen: int = 0
