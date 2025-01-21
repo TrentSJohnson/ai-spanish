@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import './App.css'
 import { vocabService, generateService } from './services/api'
 import VocabList from './components/VocabList'
@@ -11,6 +11,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [englishTranslation, setEnglishTranslation] = useState("")
   const [newVocabWord, setNewVocabWord] = useState("")
+  const [refreshVocabTrigger, setRefreshVocabTrigger] = useState(0)
 
   const handleTranslationSubmit = (e) => {
     e.preventDefault()
@@ -39,6 +40,7 @@ function App() {
       console.log(newVocabWord)
       await vocabService.createVocabWord(newVocabWord)
       setNewVocabWord("")
+      setRefreshVocabTrigger(prev => prev + 1)
     } catch (error) {
       console.error("Error adding vocab word:", error)
     }
@@ -90,7 +92,7 @@ function App() {
         </form>
       </div>
 
-      <VocabList />
+      <VocabList onRefreshNeeded={refreshVocabTrigger} />
     </>
   )
 }

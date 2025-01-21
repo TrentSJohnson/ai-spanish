@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { vocabService } from '../services/api';
 
-function VocabList() {
+function VocabList({ onRefreshNeeded }) {
   const [vocabWords, setVocabWords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,7 +18,7 @@ function VocabList() {
 
   useEffect(() => {
     loadVocabWords();
-  }, []);
+  }, [onRefreshNeeded]);
 
   const handleDelete = async (wordId) => {
     try {
