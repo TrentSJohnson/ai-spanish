@@ -61,15 +61,19 @@ function VocabList({ onRefreshNeeded }) {
             justify-content: center;
           }
           .delete-btn {
-            padding: 5px 10px;
-            background: #ff4444;
-            color: white;
+            padding: 8px;
+            background: none;
+            color: #ff4444;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
           }
           .delete-btn:hover {
-            background: #cc0000;
+            color: #cc0000;
           }
         `}
       </style>
@@ -91,8 +95,9 @@ function VocabList({ onRefreshNeeded }) {
                 <button 
                   onClick={() => handleDelete(word.id)}
                   className="delete-btn"
+                  title="Delete word"
                 >
-                  Delete
+                  🗑️
                 </button>
               </li>
           ))}
