@@ -18,13 +18,13 @@ function VocabForm({ onVocabAdded }) {
   return (
     <div className="vocab-container">
       <h2>Add New Vocabulary Word</h2>
-      <form onSubmit={handleVocabSubmit}>
+      <form onSubmit={handleVocabSubmit} className="translation-form">
         <input
           type="text"
           value={newVocabWord}
           onChange={(e) => setNewVocabWord(e.target.value)}
           placeholder="Enter new Spanish word"
-          className="vocab-input"
+          className="translation-input"
         />
         <button type="submit" className="submit-btn">
           Add Word
