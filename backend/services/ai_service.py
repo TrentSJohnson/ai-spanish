@@ -22,21 +22,14 @@ class AIService:
             lstrip_blocks=True
         )
 
-    async def generate_sentence(self, vocab_words: Optional[List[str]] = None) -> str:
+    async def generate_sentence(self, vocab_words: Optional[List[str]]) -> str:
         """Generate a sentence using OpenAI API, optionally using specific vocabulary words"""
-        if vocab_words:
-            template = self.jinja_env.get_template("sentence_with_vocab.j2")
-            prompt = template.render(vocab_words=vocab_words)
-            messages = [{"role": "user", "content": prompt}]
-        else:
-            template = self.jinja_env.get_template("sentence_with_vocab.j2")
-            prompt = template.render(vocab_words=[])
-            messages = [{"role": "user", "content": prompt}]
-
+        template = self.jinja_env.get_template("sentence_with_vocab.j2")
+        prompt = template.render(vocab_words=vocab_words)
         response = await self.client.messages.create(
             model=self.model,
-            messages=[{"role": "user", "content": messages[0]["content"]}],
-            max_tokens=1024
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300
         )
         content = response.content[0].text.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
@@ -51,7 +44,7 @@ class AIService:
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300
         )
-        content = response.choices[0].message.content.strip()
+        content = response.content[0].text.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["is_correct"], result["feedback"]
 
@@ -64,7 +57,7 @@ class AIService:
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300
         )
-        content = response.choices[0].message.content.strip()
+        content = response.content[0].text.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["corrected_sentence"]
 
@@ -77,6 +70,7 @@ class AIService:
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300
         )
-        content = response.choices[0].message.content.strip()
+        print(response)
+        content = response.content[0].text.strip()
         result = json.loads(re.search(r'{.*}', content, re.DOTALL).group(0))
         return result["feedback"]
