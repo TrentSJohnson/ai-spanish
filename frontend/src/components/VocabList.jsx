@@ -35,21 +35,59 @@ function VocabList({ onRefreshNeeded }) {
 
   return (
     <div className="vocab-list">
+      <style>
+        {`
+          .vocab-word-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+          }
+          .word-text {
+            font-weight: bold;
+            min-width: 120px;
+          }
+          .word-stats {
+            display: flex;
+            gap: 20px;
+            color: #666;
+          }
+          .delete-btn {
+            padding: 5px 10px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+          .delete-btn:hover {
+            background: #cc0000;
+          }
+        `}
+      </style>
       <h2>Vocabulary Words</h2>
       {vocabWords.length === 0 ? (
         <p>No vocabulary words added yet.</p>
       ) : (
         <ul className="vocab-words">
-          {vocabWords.map((word) => (
-            <li key={word.id} className="vocab-word-item">
-              <span>{word.word}</span>
-              <button 
-                onClick={() => handleDelete(word.id)}
-                className="delete-btn"
-              >
-                Delete
-              </button>
-            </li>
+          {vocabWords
+            .sort((a, b) => b.score - a.score)
+            .map((word) => (
+              <li key={word.id} className="vocab-word-item">
+                <span className="word-text">{word.word}</span>
+                <div className="word-stats">
+                  <span>Score: {word.score}</span>
+                  <span>Guesses: {word.guesses}</span>
+                  <span>Correct: {word.correct}</span>
+                </div>
+                <button 
+                  onClick={() => handleDelete(word.id)}
+                  className="delete-btn"
+                >
+                  Delete
+                </button>
+              </li>
           ))}
         </ul>
       )}
