@@ -1,116 +1,21 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import './App.css'
-import { vocabService, generateService } from './services/api'
 import VocabList from './components/VocabList'
+import TranslationSection from './components/TranslationSection'
+import VocabForm from './components/VocabForm'
 
 function App() {
-  const [currentSentence, setCurrentSentence] = useState({
-    id: null,
-    text: "¿Cómo estás?"
-  })
-  const [isLoading, setIsLoading] = useState(false)
-  const [englishTranslation, setEnglishTranslation] = useState("")
-  const [newVocabWord, setNewVocabWord] = useState("")
   const [refreshVocabTrigger, setRefreshVocabTrigger] = useState(0)
-  const [feedback, setFeedback] = useState("")
 
-  const handleTranslationSubmit = async (e) => {
-    e.preventDefault()
-    if (!currentSentence.id || !englishTranslation.trim()) {
-      return
-    }
-    
-    try {
-      const response = await generateService.checkSentence(
-        currentSentence.id, 
-        englishTranslation
-      )
-      setFeedback(response.result)
-    } catch (error) {
-      console.error("Error checking translation:", error)
-      setFeedback("Error checking translation. Please try again.")
-    }
-  }
-
-  const handleGenerateClick = async () => {
-    setIsLoading(true)
-    try {
-      const response = await generateService.generateSentence()
-      setCurrentSentence({
-        id: response.id,
-        text: response.sentence
-      })
-    } catch (error) {
-      console.error("Error generating sentence:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleVocabSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      console.log(newVocabWord)
-      await vocabService.createVocabWord(newVocabWord)
-      setNewVocabWord("")
-      setRefreshVocabTrigger(prev => prev + 1)
-    } catch (error) {
-      console.error("Error adding vocab word:", error)
-    }
+  const handleVocabAdded = () => {
+    setRefreshVocabTrigger(prev => prev + 1)
   }
 
   return (
     <>
       <h1>Translation Practice</h1>
-      <div className="translation-container">
-        <h2>Translate this sentence:</h2>
-        <div className="sentence-controls">
-          <p className="spanish-text">{currentSentence.text}</p>
-          <button 
-            onClick={handleGenerateClick}
-            disabled={isLoading}
-            className="generate-btn"
-          >
-            {isLoading ? 'Generating...' : 'Generate New Sentence'}
-          </button>
-        </div>
-        
-        <form onSubmit={handleTranslationSubmit}>
-          <input
-            type="text"
-            value={englishTranslation}
-            onChange={(e) => setEnglishTranslation(e.target.value)}
-            placeholder="Enter English translation"
-            className="translation-input"
-          />
-          <button type="submit" className="submit-btn">
-            Check Translation
-          </button>
-        </form>
-        
-        {feedback && (
-          <div className="feedback-container">
-            <p className="feedback-text">{feedback}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="vocab-container">
-        <h2>Add New Vocabulary Word</h2>
-        <form onSubmit={handleVocabSubmit}>
-          <input
-              type="text"
-              value={newVocabWord}
-              onChange={(e) => setNewVocabWord(e.target.value)}
-              placeholder="Enter new Spanish word"
-              className="vocab-input"
-          />
-          <button type="submit" className="submit-btn">
-            Add Word
-          </button>
-        </form>
-      </div>
-
+      <TranslationSection />
+      <VocabForm onVocabAdded={handleVocabAdded} />
       <VocabList onRefreshNeeded={refreshVocabTrigger} />
     </>
   )
