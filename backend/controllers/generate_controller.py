@@ -29,6 +29,12 @@ class GenerateController:
         vocab_word_ids = [str(word.id) for word in random_words]
         vocab_words = [word.word for word in random_words]
 
+        # Update last_seen for each word
+        max_last_seen = await self.vocab_service.get_max_last_seen()
+        new_last_seen = max_last_seen + 1
+        for word in random_words:
+            await self.vocab_service.update_last_seen(word.id, new_last_seen)
+
         sentence_text = await self.ai_service.generate_sentence(vocab_words)
         generated_sentence = await self.sentence_service.create_generated_sentence(
             GeneratedSentence(

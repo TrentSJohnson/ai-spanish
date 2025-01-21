@@ -28,6 +28,19 @@ class VocabService(BaseDBService):
         cursor = self.db.vocab_words.aggregate(pipeline)
         return [VocabWord.model_validate(doc) async for doc in cursor]
 
+    async def get_max_last_seen(self) -> int:
+        pipeline = [
+            {"$group": {"_id": None, "max_last_seen": {"$max": "$last_seen"}}}
+        ]
+        result = await self.db.vocab_words.aggregate(pipeline).to_list(1)
+        return result[0]["max_last_seen"] if result else 0
+
+    async def update_last_seen(self, word_id: ObjectId, last_seen: int) -> None:
+        await self.db.vocab_words.update_one(
+            {"_id": word_id},
+            {"$set": {"last_seen": last_seen}}
+        )
+
     async def update_vocab_word_stats(self, word_id: ObjectId, is_correct: bool) -> None:
         update = {
             "$inc": {
