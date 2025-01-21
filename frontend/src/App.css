@@ -42,9 +42,21 @@
   flex-grow: 1;
 }
 
+.vocab-form {
+  margin: 1rem auto;
+  max-width: 800px;
+}
+
+.input-button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
 .vocab-input {
-  width: 200px;
-  padding: 0.6rem;
+  width: 300px;
+  padding: 0.8rem;
   border-radius: 4px;
   border: 1px solid #646cff;
   background-color: #242424;
@@ -53,7 +65,6 @@
 }
 
 .submit-btn {
-  margin-top: 1rem;
   padding: 0.8rem 1.6rem;
   background-color: #646cff;
   color: white;
