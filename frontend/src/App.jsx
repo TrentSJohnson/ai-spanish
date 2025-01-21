@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { vocabService, generateService } from './services/api'
+import VocabList from './components/VocabList'
 
 function App() {
   const [currentSentence, setCurrentSentence] = useState({
@@ -88,6 +89,8 @@ function App() {
           </button>
         </form>
       </div>
+
+      <VocabList />
     </>
   )
 }

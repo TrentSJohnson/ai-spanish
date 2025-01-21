@@ -20,6 +20,11 @@ export const vocabService = {
     const response = await api.get(`${API_PREFIX}/vocab/words`);
     return response.data;
   },
+
+  deleteVocabWord: async (wordId) => {
+    const response = await api.delete(`${API_PREFIX}/vocab/words/${wordId}`);
+    return response.data;
+  },
 };
 
 export const generateService = {
