@@ -45,6 +45,23 @@
   background-color: #535bf2;
 }
 
+.feedback-container {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: #242424;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feedback-text {
+  color: #fff;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
 .vocab-list {
   margin-top: 2rem;
   padding: 2rem;

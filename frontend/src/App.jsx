@@ -12,11 +12,24 @@ function App() {
   const [englishTranslation, setEnglishTranslation] = useState("")
   const [newVocabWord, setNewVocabWord] = useState("")
   const [refreshVocabTrigger, setRefreshVocabTrigger] = useState(0)
+  const [feedback, setFeedback] = useState("")
 
-  const handleTranslationSubmit = (e) => {
+  const handleTranslationSubmit = async (e) => {
     e.preventDefault()
-    // TODO: Add validation logic here
-    console.log("Submitted translation:", englishTranslation)
+    if (!currentSentence.id || !englishTranslation.trim()) {
+      return
+    }
+    
+    try {
+      const response = await generateService.checkSentence(
+        currentSentence.id, 
+        englishTranslation
+      )
+      setFeedback(response.result)
+    } catch (error) {
+      console.error("Error checking translation:", error)
+      setFeedback("Error checking translation. Please try again.")
+    }
   }
 
   const handleGenerateClick = async () => {
@@ -74,6 +87,12 @@ function App() {
             Check Translation
           </button>
         </form>
+        
+        {feedback && (
+          <div className="feedback-container">
+            <p className="feedback-text">{feedback}</p>
+          </div>
+        )}
       </div>
 
       <div className="vocab-container">
