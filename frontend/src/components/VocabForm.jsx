@@ -24,7 +24,7 @@ function VocabForm({ onVocabAdded }) {
           value={newVocabWord}
           onChange={(e) => setNewVocabWord(e.target.value)}
           placeholder="Enter new Spanish word"
-          className="translation-input"
+          className="vocab-input"
         />
         <button type="submit" className="submit-btn">
           Add Word

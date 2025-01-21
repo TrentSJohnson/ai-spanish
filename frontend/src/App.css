@@ -42,6 +42,16 @@
   flex-grow: 1;
 }
 
+.vocab-input {
+  width: 300px;
+  padding: 0.6rem;
+  border-radius: 4px;
+  border: 1px solid #646cff;
+  background-color: #242424;
+  color: white;
+  font-size: 1rem;
+}
+
 .submit-btn {
   margin-top: 1rem;
   padding: 0.8rem 1.6rem;
