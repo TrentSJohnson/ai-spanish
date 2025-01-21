@@ -1,4 +1,5 @@
-from typing import Tuple
+from typing import Tuple, List
+import asyncio
 from models.translation_grade import TranslationGrade, VocabWordGrade
 
 from models.generated_sentence import GeneratedSentence
@@ -29,11 +30,13 @@ class GenerateController:
         vocab_word_ids = [str(word.id) for word in random_words]
         vocab_words = [word.word for word in random_words]
 
-        # Update last_seen for each word
+        # Update last_seen for all words concurrently
         max_last_seen = await self.vocab_service.get_max_last_seen()
         new_last_seen = max_last_seen + 1
-        for word in random_words:
-            await self.vocab_service.update_last_seen(word.id, new_last_seen)
+        await asyncio.gather(
+            *[self.vocab_service.update_last_seen(word.id, new_last_seen) 
+              for word in random_words]
+        )
 
         sentence_text = await self.ai_service.generate_sentence(vocab_words)
         generated_sentence = await self.sentence_service.create_generated_sentence(
@@ -67,20 +70,30 @@ class GenerateController:
             check_request.translation
         )
 
-        # Grade each vocab word usage
-        vocab_word_grades = []
-        for word_id in sentence.vocab_words:
-            word = await self.vocab_service.get_vocab_word(word_id)
-            if word:
-                is_correct, word_feedback = await self.ai_service.check_vocab_usage(
-                    word.word,
-                    check_request.translation
-                )
-                vocab_word_grades.append(VocabWordGrade(
-                    vocab_word=word_id,
-                    is_correct=is_correct,
-                    feedback=word_feedback
-                ))
+        # Get all vocab words concurrently
+        words = await asyncio.gather(
+            *[self.vocab_service.get_vocab_word(word_id) 
+              for word_id in sentence.vocab_words]
+        )
+        
+        # Check usage of all words concurrently
+        word_results = await asyncio.gather(
+            *[self.ai_service.check_vocab_usage(
+                word.word,
+                check_request.translation
+            ) for word in words if word]
+        )
+        
+        # Create grades from results
+        vocab_word_grades = [
+            VocabWordGrade(
+                vocab_word=word_id,
+                is_correct=is_correct,
+                feedback=word_feedback
+            )
+            for (word_id, (is_correct, word_feedback)) 
+            in zip(sentence.vocab_words, word_results)
+        ]
 
         # Create and return the grade using the service
         return await self.translation_service.create_translation_grade({
