@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 
 from controllers.generate_controller import GenerateController
-from models.requests.check_request import CheckRequest
+from models.requests.grade_request import GradeRequest
 from models.responses.sentence_response import SentenceResponse
 from models.translation_grade import TranslationGrade
 from services.ai_service import AIService
@@ -34,7 +34,7 @@ async def generate_sentence(
 
 @router.post("/check", response_model=TranslationGrade)
 async def check_translation(
-        request: CheckRequest,
+        request: GradeRequest,
         controller: GenerateController = Depends(get_controller)
 ) -> TranslationGrade:
     return await controller.grade_translation(request)

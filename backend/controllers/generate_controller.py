@@ -4,7 +4,7 @@ from models.translation_grade import TranslationGrade, VocabWordGrade
 
 from models.generated_sentence import GeneratedSentence
 from models.guessed_translation import GuessedTranslation
-from models.requests.check_request import CheckRequest
+from models.requests.grade_request import GradeRequest
 from models.responses.sentence_response import SentenceResponse
 from services.ai_service import AIService
 from services.sentence_service import SentenceService
@@ -51,7 +51,7 @@ class GenerateController:
             sentence=generated_sentence.sentence
         )
 
-    async def grade_translation(self, check_request: CheckRequest) -> TranslationGrade:
+    async def grade_translation(self, check_request: GradeRequest) -> TranslationGrade:
         # Get the original sentence and guessed translation
         sentence = await self.sentence_service.get_generated_sentence(check_request.sentence_id)
         if not sentence:
