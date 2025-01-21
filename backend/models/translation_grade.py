@@ -9,6 +9,7 @@ from models.vocab_word import PyObjectId
 class VocabWordGrade(BaseModel):
     vocab_word: PyObjectId
     is_correct: bool
+    feedback: str
 
     class Config:
         json_encoders = {ObjectId: str}
