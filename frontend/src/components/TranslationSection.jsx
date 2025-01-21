@@ -65,9 +65,11 @@ function TranslationSection() {
           placeholder="Enter English translation"
           className="translation-input"
         />
-        <button type="submit" className="submit-btn">
-          Check Translation
-        </button>
+        <div className="button-container">
+          <button type="submit" className="submit-btn">
+            Check Translation
+          </button>
+        </div>
       </form>
       
       {feedback && (
