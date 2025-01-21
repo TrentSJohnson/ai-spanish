@@ -57,7 +57,7 @@ function TranslationSection() {
         </button>
       </div>
       
-      <form onSubmit={handleTranslationSubmit}>
+      <form onSubmit={handleTranslationSubmit} className="translation-form">
         <input
           type="text"
           value={englishTranslation}

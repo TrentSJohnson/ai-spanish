@@ -41,17 +41,24 @@ function VocabList({ onRefreshNeeded }) {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            margin: 10px 0;
+            background: #242424;
+            border-radius: 8px;
           }
           .word-text {
             font-weight: bold;
-            min-width: 120px;
+            min-width: 150px;
+            text-align: left;
+            font-size: 1.1em;
           }
           .word-stats {
             display: flex;
-            gap: 20px;
-            color: #666;
+            gap: 40px;
+            color: #999;
+            flex-grow: 1;
+            justify-content: center;
           }
           .delete-btn {
             padding: 5px 10px;
