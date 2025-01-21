@@ -8,7 +8,10 @@ function TranslationSection() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [englishTranslation, setEnglishTranslation] = useState("")
-  const [feedback, setFeedback] = useState("")
+  const [feedback, setFeedback] = useState({
+    generalFeedback: "",
+    vocabGrades: []
+  })
 
   const handleTranslationSubmit = async (e) => {
     e.preventDefault()
@@ -21,10 +24,16 @@ function TranslationSection() {
         currentSentence.id, 
         englishTranslation
       )
-      setFeedback(response.result)
+      setFeedback({
+        generalFeedback: response.feedback,
+        vocabGrades: response.vocab_word_grades || []
+      })
     } catch (error) {
       console.error("Error checking translation:", error)
-      setFeedback("Error checking translation. Please try again.")
+      setFeedback({
+        generalFeedback: "Error checking translation. Please try again.",
+        vocabGrades: []
+      })
     }
   }
 
@@ -72,9 +81,20 @@ function TranslationSection() {
         </div>
       </form>
       
-      {feedback && (
+      {feedback.generalFeedback && (
         <div className="feedback-container">
-          <p className="feedback-text">{feedback}</p>
+          <p className="feedback-text">{feedback.generalFeedback}</p>
+          {feedback.vocabGrades.length > 0 && (
+            <div className="vocab-feedback">
+              <h3>Vocabulary Usage:</h3>
+              {feedback.vocabGrades.map((grade, index) => (
+                <div key={index} className={`vocab-grade ${grade.is_correct ? 'correct' : 'incorrect'}`}>
+                  <span className="vocab-word">{grade.vocab_word}</span>
+                  <span className="vocab-feedback-text">{grade.feedback}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
