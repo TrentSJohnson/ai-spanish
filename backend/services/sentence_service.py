@@ -11,7 +11,7 @@ class SentenceService(BaseDBService):
         result = await self.db.generated_sentences.insert_one(sentence.model_dump(by_alias=True, exclude_none=True))
         return await self.get_generated_sentence(result.inserted_id)
 
-    async def get_generated_sentence(self, sentence_id: Union[ObjectId, str]) -> Optional[GeneratedSentence]:
+    async def get_generated_sentence(self, sentence_id: ObjectId | str) -> Optional[GeneratedSentence]:
         if isinstance(sentence_id, str):
             sentence_id = ObjectId(sentence_id)
         sentence_dict = await self.db.generated_sentences.find_one({"_id": sentence_id})
