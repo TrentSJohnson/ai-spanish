@@ -32,15 +32,3 @@ async def generate_sentence(
     return await controller.generate_sentence()
 
 
-@router.post("/check")
-async def check_sentence(
-        request: CheckRequest,
-        controller: GenerateController = Depends(get_controller)
-) -> dict:
-    success, feedback = await controller.check_sentence(request)
-    if not success:
-        raise HTTPException(status_code=404, detail=feedback)
-
-    return {
-        "result": feedback
-    }
