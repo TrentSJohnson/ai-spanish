@@ -56,10 +56,10 @@ class GenerateController:
         sentence = await self.sentence_service.get_generated_sentence(check_request.sentence_id)
         if not sentence:
             raise ValueError("Sentence not found")
-            
+        print(sentence.id,check_request.translation)
         translation = await self.translation_service.create_guessed_translation(
             GuessedTranslation(
-                generated_sentence=check_request.sentence_id,
+                sentence=sentence.id,
                 translation=check_request.translation
             )
         )
