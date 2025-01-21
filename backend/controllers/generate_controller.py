@@ -96,9 +96,10 @@ class GenerateController:
         ]
 
         # Create and return the grade using the service
-        return await self.translation_service.create_translation_grade({
-            "sentence": sentence.id,
-            "guessed_translation": translation.id,
-            "vocab_word_grades": vocab_word_grades,
-            "feedback": feedback
-        })
+        grade = TranslationGrade(
+            sentence=sentence.id,
+            guessed_translation=translation.id,
+            vocab_word_grades=vocab_word_grades,
+            feedback=feedback
+        )
+        return await self.translation_service.create_translation_grade(grade)
