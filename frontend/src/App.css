@@ -75,6 +75,9 @@
   padding: 2rem;
   border-radius: 8px;
   background-color: #1a1a1a;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .vocab-words {
