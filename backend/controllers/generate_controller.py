@@ -59,7 +59,7 @@ class GenerateController:
             
         translation = await self.translation_service.create_guessed_translation(
             GuessedTranslation(
-                sentence=check_request.sentence_id,
+                generated_sentence=check_request.sentence_id,
                 translation=check_request.translation
             )
         )

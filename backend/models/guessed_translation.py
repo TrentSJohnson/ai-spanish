@@ -9,7 +9,7 @@ from models.vocab_word import PyObjectId
 
 class GuessedTranslation(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
-    generated_sentence: PyObjectId
+    translation: PyObjectId
     guess: str
     created_at: datetime = Field(default_factory=datetime.now)
 
