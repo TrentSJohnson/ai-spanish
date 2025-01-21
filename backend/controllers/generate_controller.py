@@ -26,6 +26,21 @@ class GenerateController:
 
     async def generate_sentence(self) -> SentenceResponse:
         random_words = await self.vocab_service.get_random_vocab_words(2)
+        vocab_word_ids = [str(word.id) for word in random_words]
+        vocab_words = [word.word for word in random_words]
+
+        sentence_text = await self.ai_service.generate_sentence(vocab_words)
+        generated_sentence = await self.sentence_service.create_generated_sentence(
+            GeneratedSentence(
+                vocab_words=vocab_word_ids or [],
+                sentence=sentence_text
+            )
+        )
+
+        return SentenceResponse(
+            id=str(generated_sentence.id),
+            sentence=generated_sentence.sentence
+        )
 
     async def grade_translation(self, check_request: CheckRequest) -> TranslationGrade:
         # Get the original sentence and guessed translation
@@ -69,18 +84,3 @@ class GenerateController:
             feedback=feedback
         )
         return await self.translation_service.create_translation_grade(grade)
-        vocab_word_ids = [str(word.id) for word in random_words]
-        vocab_words = [word.word for word in random_words]
-
-        sentence_text = await self.ai_service.generate_sentence(vocab_words)
-        generated_sentence = await self.sentence_service.create_generated_sentence(
-            GeneratedSentence(
-                vocab_words=vocab_word_ids or [],
-                sentence=sentence_text
-            )
-        )
-
-        return SentenceResponse(
-            id=str(generated_sentence.id),
-            sentence=generated_sentence.sentence
-        )
