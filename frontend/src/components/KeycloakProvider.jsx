@@ -16,8 +16,7 @@ const KeycloakProvider = ({ children }) => {
 
   const initOptions = {
     checkLoginIframe: false,
-    onLoad: 'check-sso',
-    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+    onLoad: 'login-required',
     pkceMethod: 'S256',
     enableLogging: true,
     tokenMinValidity: 30
