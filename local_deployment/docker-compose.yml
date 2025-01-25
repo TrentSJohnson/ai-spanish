@@ -4,7 +4,7 @@ services:
     container_name: aispanish-frontend
     build:
       context: ../frontend
-      dockerfile: local_deployment/Dockerfile.frontend
+      dockerfile: Dockerfile.frontend
     ports:
       - "5173:5173"
     volumes:
@@ -18,7 +18,7 @@ services:
     container_name: aispanish-backend
     build:
       context: ../backend
-      dockerfile: local_deployment/Dockerfile.backend
+      dockerfile: Dockerfile.backend
     ports:
       - "8000:8000"
     volumes:
