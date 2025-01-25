@@ -24,7 +24,9 @@ services:
       - "8000:8000"
     volumes:
       - ../backend:/app
-    env_file: local.env
+    env_file:
+      - local.env
+      - backend.env
     depends_on:
       - mongodb
       - keycloak
