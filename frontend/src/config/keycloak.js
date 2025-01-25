@@ -6,6 +6,14 @@ const keycloakConfig = {
     clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID || 'aispanish-frontend'
 };
 
-const keycloak = new Keycloak(keycloakConfig);
+// Create a singleton instance
+let keycloakInstance = null;
 
-export default keycloak;
+const initKeycloak = () => {
+    if (!keycloakInstance) {
+        keycloakInstance = new Keycloak(keycloakConfig);
+    }
+    return keycloakInstance;
+};
+
+export default initKeycloak();
