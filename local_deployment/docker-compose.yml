@@ -11,8 +11,7 @@ services:
     volumes:
       - ../frontend:/app
       - /app/node_modules
-    environment:
-      - VITE_API_URL=http://localhost:8000
+    env_file: local.env
     depends_on:
       - backend
 
@@ -25,13 +24,10 @@ services:
       - "8000:8000"
     volumes:
       - ../backend:/app
-    environment:
-      - MONGODB_URL=mongodb://mongodb:27017
-      - DATABASE_NAME=aispanish
+    env_file: local.env
     depends_on:
       - mongodb
       - keycloak
-    env_file: backend.env
 
   mongodb:
     image: mongo:latest
@@ -43,10 +39,7 @@ services:
   postgres:
     image: postgres:15
     container_name: keycloak-postgres
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloak
+    env_file: local.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -62,16 +55,15 @@ services:
     container_name: keycloak
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: keycloak
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
       KC_HTTP_ENABLED: true
       KC_HEALTH_ENABLED: true
       KC_METRICS_ENABLED: true
+    env_file: local.env
     ports:
       - "8080:8080"
     depends_on:
