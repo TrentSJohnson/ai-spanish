@@ -7,3 +7,4 @@ pymongo
 openai
 jinja2
 anthropic
+httpx
