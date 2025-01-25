@@ -6,14 +6,20 @@ const keycloakConfig = {
     clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID || 'aispanish-frontend'
 };
 
-// Create a singleton instance
-let keycloakInstance = null;
+// Create a singleton instance that persists across re-renders
+const keycloak = new Keycloak(keycloakConfig);
 
-const initKeycloak = () => {
-    if (!keycloakInstance) {
-        keycloakInstance = new Keycloak(keycloakConfig);
+// Add a flag to track initialization
+keycloak._initialized = false;
+
+// Wrap the original init method to prevent multiple initializations
+const originalInit = keycloak.init.bind(keycloak);
+keycloak.init = async function(...args) {
+    if (this._initialized) {
+        return Promise.resolve(true);
     }
-    return keycloakInstance;
+    this._initialized = true;
+    return originalInit(...args);
 };
 
-export default initKeycloak();
+export default keycloak;
