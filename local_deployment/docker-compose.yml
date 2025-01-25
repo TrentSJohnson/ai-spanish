@@ -4,12 +4,12 @@ services:
   frontend:
     container_name: aispanish-frontend
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ..
+      dockerfile: local_deployment/Dockerfile.frontend
     ports:
       - "5173:5173"
     volumes:
-      - ./frontend:/app
+      - ../frontend:/app
       - /app/node_modules
     environment:
       - VITE_API_URL=http://localhost:8000
@@ -19,12 +19,12 @@ services:
   backend:
     container_name: aispanish-backend
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ..
+      dockerfile: local_deployment/Dockerfile.backend
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ../backend:/app
     environment:
       - MONGODB_URL=mongodb://mongodb:27017
       - DATABASE_NAME=aispanish
@@ -57,8 +57,8 @@ services:
 
   keycloak:
     build:
-      context: .
-      dockerfile: Dockerfile.keycloak
+      context: ..
+      dockerfile: local_deployment/Dockerfile.keycloak
     container_name: keycloak
     environment:
       KC_DB: postgres
