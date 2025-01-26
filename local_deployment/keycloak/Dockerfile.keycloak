@@ -16,4 +16,4 @@ FROM quay.io/keycloak/keycloak:latest
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 # Copy realm configuration
-COPY keycloak/aispanish.json /opt/keycloak/data/import/
+COPY realm-export.json /opt/keycloak/data/import/
